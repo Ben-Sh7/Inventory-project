@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>ניהול מלאי</title>
+    <link rel="stylesheet" href="../index.css">
+</head>
+<body>
+    <h1>0.2מערכת ניהול מלאי</h1>
+    
+    <h3>הוספת פריט חדש:</h3>
+    <input type="text" id="itemName" placeholder="שם הפריט">
+    <input type="number" id="itemQty" placeholder="כמות">
+    <button onclick="addItem()">הוסף</button>
+
+    <h3>רשימת מלאי:</h3>
+    <ul id="inventory-list"></ul>
+
+    <script>
+        async function loadItems() {
+            const config = await fetch('/config').then(r => r.json());
+            const items = await fetch(`${config.backendUrl}/api/items`).then(r => r.json());
+            const list = document.getElementById('inventory-list');
+            list.innerHTML = '';
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<b>${item.name}</b>: ${item.quantity}`;
+                list.appendChild(li);
+            });
+        }
+
+        async function addItem() {
+            const name = document.getElementById('itemName').value;
+            const quantity = document.getElementById('itemQty').value;
+            const config = await fetch('/config').then(r => r.json());
+
+            await fetch(`${config.backendUrl}/api/items`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, quantity: parseInt(quantity) })
+            });
+
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemQty').value = '';
+            loadItems(); // רענון הרשימה
+        }
+
+        loadItems();
+    </script>
+</body>
+</html>

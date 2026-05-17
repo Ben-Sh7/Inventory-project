@@ -1,0 +1,57 @@
+const express = require('express');
+const app = express();
+const path = require('path');
+
+// משתנה סביבה שיגיד ל-Frontend איפה ה-Backend נמצא
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8080';
+
+app.use(express.static('public'));
+app.use(express.json());
+
+app.get('/config', (req, res) => {
+    res.json({ backendUrl: '' });
+});
+
+// Proxy לכל הבקשות ל-/api
+const http = require('http');
+const https = require('https');
+
+app.all('/api/*', (req, res) => {
+    const targetUrl = new URL(BACKEND_URL + req.path);
+    const protocol = targetUrl.protocol === 'https:' ? https : http;
+    
+    const options = {
+        hostname: targetUrl.hostname,
+        port: targetUrl.port || (targetUrl.protocol === 'https:' ? 443 : 80),
+        path: targetUrl.pathname,
+        method: req.method,
+        headers: { 'Content-Type': 'application/json' }
+    };
+
+    const proxyReq = protocol.request(options, (proxyRes) => {
+        let data = '';
+        proxyRes.on('data', (chunk) => { data += chunk; });
+        proxyRes.on('end', () => {
+            try {
+                res.json(JSON.parse(data));
+            } catch (e) {
+                res.status(500).json({ error: 'Invalid response from backend' });
+            }
+        });
+    });
+
+    if (req.body && Object.keys(req.body).length > 0) {
+        proxyReq.write(JSON.stringify(req.body));
+    }
+
+    proxyReq.on('error', (error) => {
+        console.error('Proxy error:', error);
+        res.status(500).json({ error: 'Failed to connect to backend' });
+    });
+
+    proxyReq.end();
+});
+
+app.listen(3000, () => {
+    console.log('Frontend server running on port 3000');
+});

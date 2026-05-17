@@ -1,0 +1,77 @@
+/* עיצוב בסיסי ומודרני לאפליקציה */
+body {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	background: #f4f6fb;
+	margin: 0;
+	padding: 0;
+	color: #222;
+}
+
+header {
+	background: #2d6cdf;
+	color: #fff;
+	padding: 1.5rem 0;
+	text-align: center;
+	box-shadow: 0 2px 8px rgba(44, 108, 223, 0.1);
+}
+
+main {
+	max-width: 800px;
+	margin: 2rem auto;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+	padding: 2rem;
+}
+
+button, input[type="submit"] {
+	background: #2d6cdf;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	padding: 0.6rem 1.2rem;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+button:hover, input[type="submit"]:hover {
+	background: #1b4e9b;
+}
+
+input, select, textarea {
+	padding: 0.5rem;
+	border: 1px solid #d1d5db;
+	border-radius: 4px;
+	margin-bottom: 1rem;
+	font-size: 1rem;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 1.5rem;
+}
+th, td {
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid #e5e7eb;
+	text-align: left;
+}
+th {
+	background: #f0f4fa;
+}
+tr:hover {
+	background: #f9fafb;
+}
+
+.container {
+	padding: 2rem;
+}
+
+.title {
+	font-size: 2rem;
+	font-weight: bold;
+	margin-bottom: 1.5rem;
+	color: #2d6cdf;
+}

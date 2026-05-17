@@ -1,0 +1,4 @@
+com\example\inventory\InventoryController.class
+com\example\inventory\InventoryApplication.class
+com\example\inventory\InventoryRepository.class
+com\example\inventory\Item.class
