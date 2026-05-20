@@ -3,7 +3,7 @@ const app = express();
 const path = require('path');
 
 // משתנה סביבה שיגיד ל-Frontend איפה ה-Backend נמצא
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8080';
+const BACKEND_URL = process.env.BACKEND_URL || '';
 
 app.use(express.static('public'));
 app.use(express.json());
