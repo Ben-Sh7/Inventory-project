@@ -17,7 +17,11 @@ const http = require('http');
 const https = require('https');
 
 app.all('/api/*', (req, res) => {
-    const targetUrl = new URL(BACKEND_URL + req.path);
+    let backendBaseUrl = BACKEND_URL;
+    if (!backendBaseUrl) {
+        backendBaseUrl = 'http://inventory-backend-service:8080';
+    }
+    const targetUrl = new URL(backendBaseUrl + req.path);
     const protocol = targetUrl.protocol === 'https:' ? https : http;
     
     const options = {
