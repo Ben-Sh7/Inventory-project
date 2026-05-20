@@ -1,8 +1,8 @@
 pipeline {
     agent any
 
-    parameters {
-        string(name: 'DIR_PATH', description: 'Project directory', defaultValue: 'c:/Users/bbbss/Desktop/Engineer/Devops/yehudit/04_26/inventory-project2')
+    triggers {
+        githubPush()
     }
 
     environment {
@@ -13,13 +13,11 @@ pipeline {
     stages {
         stage('Build Docker Images') {
             steps {
-                dir("${params.DIR_PATH}") {
-                    echo "Building Frontend Image..."
-                    bat "docker build -t %FRONTEND_IMAGE% ./frontend"
+                echo "Building Frontend Image..."
+                bat "docker build -t %FRONTEND_IMAGE% ./frontend"
 
-                    echo "Building Backend Image..."
-                    bat "docker build -t %BACKEND_IMAGE% ./backend"
-                }
+                echo "Building Backend Image..."
+                bat "docker build -t %BACKEND_IMAGE% ./backend"
             }
         }
 
