@@ -23,7 +23,9 @@ app.all('/api/*', (req, res) => {
     }
     const targetUrl = new URL(backendBaseUrl + req.path);
     const protocol = targetUrl.protocol === 'https:' ? https : http;
-    
+
+    console.log('Target URL:', targetUrl.toString(), 'Hostname:', targetUrl.hostname, 'Port:', targetUrl.port);
+
     const options = {
         hostname: targetUrl.hostname,
         port: targetUrl.port || (targetUrl.protocol === 'https:' ? 443 : 80),
