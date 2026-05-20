@@ -19,7 +19,7 @@ const https = require('https');
 app.all('/api/*', (req, res) => {
     let backendBaseUrl = BACKEND_URL;
     if (!backendBaseUrl) {
-        backendBaseUrl = 'http://inventory-backend-service:8080';
+        backendBaseUrl = 'http://inventory-backend-service.default.svc.cluster.local:8080';
     }
     const targetUrl = new URL(backendBaseUrl + req.path);
     const protocol = targetUrl.protocol === 'https:' ? https : http;
