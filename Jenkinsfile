@@ -21,6 +21,18 @@ pipeline {
             }
         }
 
+                stage('push images to ECR') {
+            steps {
+                echo "push images to ECR Frontend Image..."
+                bat "docker tag %FRONTEND_IMAGE% 688035105164.dkr.ecr.us-east-1.amazonaws.com/%FRONTEND_IMAGE%"
+                bat "docker push 688035105164.dkr.ecr.us-east-1.amazonaws.com/%FRONTEND_IMAGE%"
+
+                echo "push images to ECR Backend Image..."
+                bat "docker tag %BACKEND_IMAGE% 688035105164.dkr.ecr.us-east-1.amazonaws.com/%BACKEND_IMAGE%"
+                bat "docker push 688035105164.dkr.ecr.us-east-1.amazonaws.com/%BACKEND_IMAGE%"
+            }
+        }
+
         stage('Load Images to Minikube') {
             steps {
                 echo "Loading Frontend Image to Minikube..."
