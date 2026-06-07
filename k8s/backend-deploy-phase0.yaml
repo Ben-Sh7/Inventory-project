@@ -29,10 +29,12 @@ spec:
         app: inventory
         tier: backend
     spec:
+      imagePullSecrets:
+      - name: ecr-secret
       containers:
       - name: java-app
-        image: inventory-project2-backend:latest
-        imagePullPolicy: Never
+        image: 688035105164.dkr.ecr.us-east-1.amazonaws.com/backend-inventory:v26
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
         env:

@@ -14,7 +14,7 @@ spec:
       containers:
       - name: postgres
         image: postgres:latest
-        imagePullPolicy: Never
+        imagePullPolicy: IfNotPresent
         env:
         - name: POSTGRES_DB
           value: "inventory_db"
@@ -29,8 +29,9 @@ spec:
           mountPath: /var/lib/postgresql
       volumes:
       - name: postgres-volume
-        persistentVolumeClaim:
-          claimName: postgres-pvc
+        hostPath:
+          path: /mnt/data/postgres
+          type: DirectoryOrCreate
 
 ---
 apiVersion: v1

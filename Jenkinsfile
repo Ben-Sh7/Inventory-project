@@ -14,48 +14,41 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 echo "Building Frontend Image..."
-                bat "docker build -t %FRONTEND_IMAGE% ./frontend"
+                sh "docker build -t ${FRONTEND_IMAGE} ./frontend"
 
                 echo "Building Backend Image..."
-                bat "docker build -t %BACKEND_IMAGE% ./backend"
+                sh "docker build -t ${BACKEND_IMAGE} ./backend"
             }
         }
 
-                stage('push images to ECR') {
+                stage('Push Images to ECR') {
             steps {
-                echo "push images to ECR Frontend Image..."
-                bat "docker tag %FRONTEND_IMAGE% 688035105164.dkr.ecr.us-east-1.amazonaws.com/%FRONTEND_IMAGE%"
-                bat "docker push 688035105164.dkr.ecr.us-east-1.amazonaws.com/%FRONTEND_IMAGE%"
+                echo "Logging in to ECR..."
+                sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 688035105164.dkr.ecr.us-east-1.amazonaws.com"
 
-                echo "push images to ECR Backend Image..."
-                bat "docker tag %BACKEND_IMAGE% 688035105164.dkr.ecr.us-east-1.amazonaws.com/%BACKEND_IMAGE%"
-                bat "docker push 688035105164.dkr.ecr.us-east-1.amazonaws.com/%BACKEND_IMAGE%"
+                echo "Pushing Frontend Image..."
+                sh "docker tag ${FRONTEND_IMAGE} 688035105164.dkr.ecr.us-east-1.amazonaws.com/${FRONTEND_IMAGE}"
+                sh "docker push 688035105164.dkr.ecr.us-east-1.amazonaws.com/${FRONTEND_IMAGE}"
+
+                echo "Pushing Backend Image..."
+                sh "docker tag ${BACKEND_IMAGE} 688035105164.dkr.ecr.us-east-1.amazonaws.com/${BACKEND_IMAGE}"
+                sh "docker push 688035105164.dkr.ecr.us-east-1.amazonaws.com/${BACKEND_IMAGE}"
             }
         }
 
-        stage('Load Images to Minikube') {
-            steps {
-                echo "Loading Frontend Image to Minikube..."
-                bat "minikube image load %FRONTEND_IMAGE%"
-
-                echo "Loading Backend Image to Minikube..."
-                bat "minikube image load %BACKEND_IMAGE%"
-            }
-        }
-
-        stage('Deploy to Kubernetes') {
+        stage('Update Deploy to Kubernetes') {
             steps {
                 echo "Updating Frontend Deployment..."
-                bat "kubectl set image deployment/inventory-frontend-app frontend-app=%FRONTEND_IMAGE%"
+                sh "kubectl set image deployment/inventory-frontend-app frontend-app=688035105164.dkr.ecr.us-east-1.amazonaws.com/${FRONTEND_IMAGE}"
 
                 echo "Updating Backend Deployment..."
-                bat "kubectl set image deployment/inventory-backend java-app=%BACKEND_IMAGE%"
+                sh "kubectl set image deployment/inventory-backend java-app=688035105164.dkr.ecr.us-east-1.amazonaws.com/${BACKEND_IMAGE}"
 
                 echo "Waiting for Frontend Rollout..."
-                bat "kubectl rollout status deployment/inventory-frontend-app --timeout=120s"
+                sh "kubectl rollout status deployment/inventory-frontend-app --timeout=120s"
 
                 echo "Waiting for Backend Rollout..."
-                bat "kubectl rollout status deployment/inventory-backend --timeout=120s"
+                sh "kubectl rollout status deployment/inventory-backend --timeout=120s"
             }
         }
     }

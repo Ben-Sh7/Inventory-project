@@ -25,10 +25,12 @@ spec:
       labels:
         app: inventory-frontend
     spec:
+      imagePullSecrets:
+      - name: ecr-secret
       containers:
       - name: frontend-app
-        image: inventory-project2-frontend:latest
-        imagePullPolicy: Never
+        image: 688035105164.dkr.ecr.us-east-1.amazonaws.com/frontend-inventory:v26
+        imagePullPolicy: IfNotPresent
         env:
             - name: "BACKEND_URL"
               value: ""
